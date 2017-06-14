@@ -1,0 +1,203 @@
+.gauge{
+    position: absolute;
+    float: left;
+    left: 0px;
+    top: 0px;
+    width: 50%;
+}
+
+fieldset.scheduler-border {
+    border: 3px solid #e6ebed !important;
+    border-radius: 8px;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+    box-shadow:  0px 0px 0px 0px #000;
+    height:100%
+}
+
+legend.scheduler-border {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    background: #e6ebed;
+    border-radius: 8px;
+
+}
+
+.roundDivHighlight{
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    border-radius: 10px;
+    background: #00bcd4;
+    float: left;
+
+}
+
+.roundDivNormal{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 5px;
+    border:2px solid #00bcd4;
+    background: #ffffff;
+    float: left;
+}
+.diagnosticItem{
+    height: 30px;
+    margin-bottom: 20px;
+}
+.diagnosticItemLeft{
+    float: left;
+    margin-right: 30px;
+    font-size: 1.5em;
+    height: 30px;
+    line-height: 30px;
+}
+.diagnosticItemRight{
+    float: right;
+    right: 0px;
+}
+li{list-style-type:none;}
+
+ul{
+    height: 100%;
+    margin: 0px;
+}
+
+.RatioChartContainer{
+    max-width: 660px;
+    margin: auto;
+    height: 400px;
+    margin: 0 auto;
+}
+
+.tabA{
+
+    width: 200px;
+    position: absolute;
+}
+
+.tab{
+    width: 15%;
+}
+
+
+li.tab {
+    /* background-color: #00bcd4; */
+    /* color: white; */
+    position: relative;
+    /* padding-right: 10px; */
+    /* background-image: url('http://localhost:63343/VDrift/static/assets/tab-blue.png'); */
+    background-color: transparent;
+}
+
+
+li.tab:after {
+    display: inline-block;
+    border: 10px solid;
+    border-color: red;
+
+    position: absolute;
+    left: 0;
+}
+
+a {}
+
+li.tab a {
+    background-image: url('assets/tab-blue.png');
+    background-repeat: no-repeat;
+    background-size: 100% 38px;
+    color: #00bcd4;
+    color: white;
+    border: none;
+    cursor: Pointer;
+}
+
+li.tab.active a {
+    background-image: url('assets/tab-white.png');
+    color: #00bcd4;
+    border: none;
+    cursor: Pointer;
+    background-color: transparent;
+}
+
+div.backgroundIm{
+    position: absolute;
+    z-index: -1;
+    height: 100%;
+
+}
+
+.roundLocation{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 5px;
+    border:5px solid #00bcd4;
+    background: lightgray;
+    float: left;
+}
+
+.TextLocationTitle{
+
+    font-size: 24px;
+    float: left;
+    text-wrap: None;
+}
+
+.TextLocationNumber{
+
+    font-size: 32px;
+    float: left;
+    text-wrap: None;
+}
+
+.movingContainer{
+    position: absolute;
+    top: 0px;
+    width: 100px;
+    height: 100px;
+}
+
+.movingSign{
+    position: absolute;
+    left: 30px;
+    top:30px;
+}
+
+.stopHistoryText{
+    font-size: 18px;
+}
+
+.stopHistoryIndex{
+    float: left;
+
+}
+.stopHistoryTime{
+    float: right;
+    margin-right: 20px;
+
+}
+
+.stopHistoryStayTime{
+    float: right;
+    margin-right: 50px;
+}
+
+.stop{
+    width: 10px;
+    height: 10px;
+
+    border-radius: 5px;
+    background: #00bbd9;
+    position: absolute;
+    color: #000000;
+}
+
+body{
+    background-color: #e6ebed;
+}

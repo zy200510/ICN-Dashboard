@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="css/app.css" rel="stylesheet">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href='css/d3v4-networking-graph.css' rel='stylesheet'>
+    <link href="css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+
+    <script type="application/javascript" src="script/public_lib/jquery-2.2.0.min.js"></script>
+    <script type="application/javascript" src="script/public_lib/jquery-ui.js"></script>
+
+    <script type="application/javascript" src="script/backup/justgage.js"></script>
+    <script type="application/javascript" src="script/public_lib/highstock.js"></script>
+    <script type="application/javascript" src="script/public_lib/exporting.js"></script>
+    <script type="application/javascript" src="script/public_lib/bootstrap.min.js"></script>
+    <script type="application/javascript" src="script/app.js"></script>
+
+    <script type="application/javascript" src="script/public_lib/d3.v4.js"></script>
+    <script type="application/javascript" src="script/public_lib/d3v4-brush-lite.js"></script>
+    <script type="application/javascript" src="script/icn-networking.js"></script>
+
+
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="backgroundIm">
+    <img src="assets/bg.png" style="height: 100%;width: 100%">
+</div>
+<div>
+    <div class="row-fluid">
+        <div style="width: 25%; height:85px;float: left;left: 0px;top: 0px">
+            <img src="assets/LOGO-ICN.png">
+        </div>
+
+    </div>
+    <div class="row-fluid" style="position: relative; margin-top:20px">
+        <div id="gauge_container" class="col-md-8">
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    <div style="margin-left: 10px;margin-right: 1px">
+                        Networking Topology
+                    </div>
+                </legend>
+                <div id="d3_selectable_force_directed_graph"  style="height:300px;  position: relative; margin-top: -10px; margin-bottom: -10px">
+                    <svg />
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-md-4" style="float: None;position: absolute;right: 0px;height: 100%">
+
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">
+                    <div style="margin-left: 10px;margin-right: 80px">
+                        <select style="margin-top:5px">
+                          <option value="volvo">Total</option>
+                          <option value="saab">Usage</option>
+                          <option value="mercedes">Available</option>
+                        </select>
+                        Statistics
+                    </div>
+
+                </legend>
+                <div id="pieChart" style="height: 100%;width: 100%">
+                    <svg id="ratioChart"></svg>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row-fluid" style="width: 96%;float: left;left:2%;position: absolute; margin-bottom: 20px">
+        <div class="span12" >
+            <div class="row-fluid" style="background-color: #ffffff;border-radius: 10px">
+                <div style="margin: 10px">
+                    <div id="timeline"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    $(document).ready(function(ex){
+        var app =new App();
+
+         app.drawTimeline('#timeline');
+
+         app.drawRatio("./data/ratioPie.cvs");
+
+        app.drawTopology("#d3_selectable_force_directed_graph","./data/sample.json");
+
+    })
+</script>
+</body>
+</html>

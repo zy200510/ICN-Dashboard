@@ -1,92 +1,109 @@
 function App(){
     this.host = window.location;
+    this.selectedId = "";
     this.currentIndex = 0;
     this.alphabet=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
     this.debug = false;
+    this.d3Graph = new D3ForceDirectedGraph()
+    this.colors = new Array("#00ff00","#66ff66","#99ff66","#ccff66","#ffff00","#ffcc00","#ff9933","#ff6600","#ff3300","#ff0000","#ff0000")
+    this.timelineChartContainer="";
+    this.ratioChartContainer = "";
+    this.selectedChartContainer = "";
+    this.preSelectedId = "";
+
 }
 
 App.prototype={
 
+    start:function(){
+        var apiSummaryAddress = this.host + "summary";
+        var apiSelectedAddress = this.host + "selected/";
+        var self = this;
+        var timelineChart = $("#" + this.timelineChartContainer).highcharts();
+        var ratioChart = $("#" + this.ratioChartContainer).highcharts();
+
+        var selectedChartObj = $("#" + this.selectedChartContainer);
+        var selectedChart =selectedChartObj.highcharts();
+        selectedChartObj.hide();
+
+        setInterval(function () {
+            $.getJSON(apiSummaryAddress, function(data) {
+
+                  var cache = data["cache"];
+                  values = []
+                  for(var i=0;i<10;i++){
+                    values.push(cache[i]);
+                  }
+                  ratioChart.series[0].setData(values);
+
+                  var timeLineX = (new Date()).getTime();
+                  var timeLineY = Math.round(Math.random() * 100);
+
+                  timelineChart.series[0].addPoint([timeLineX, timeLineY], true, true);
+
+                }, 1000);
+
+                if(self.d3Graph.selectedId == ""){
+                    selectedChartObj.hide();
+                }else{
+                    selectedChartObj.show();
+                    selectedChart.setTitle({text: self.d3Graph.selectedId});
+                    var apiSelected = apiSelectedAddress +self.d3Graph.selectedId;
+                    $.getJSON(apiSelected, function(data) {
+                        selectedChart.series[0].addPoint([data], true, true);
+                    }, 1000);
+                }
+
+        }, 1000);
+    },
     // drawTimeline, use to show cache timeline
     drawTimeline:function(container){
+        this.timelineChartContainer = container;
         Highcharts.setOptions({
-            global : {
-                useUTC : false
+            global: {
+                useUTC: false
             }
         });
 
         // Create the chart
-        $(container).highcharts('StockChart', {
-            chart : {
-                events : {
-                    load : function () {
-
-                        // set up the updating of the chart each second
-                        var series = this.series[0];
-                        setInterval(function () {
-                            var x = (new Date()).getTime(), // current time
-                                y = Math.round(Math.random() * 100);
-                            series.addPoint([x, y], true, true);
-                        }, 1000);
-                    }
-                }
-            },
+       Highcharts.stockChart(container, {
 
             rangeSelector: {
                 buttons: [{
                     count: 1,
                     type: 'minute',
-                    text: '1m'
+                    text: '1M'
                 }, {
-                    count: 60,
-                    type: 'hour',
-                    text: '60m'
+                    count: 5,
+                    type: 'minute',
+                    text: '5M'
                 }, {
-                    count: 3600,
-                    type: 'day',
-                    text: '3600m'
+                    type: 'all',
+                    text: 'All'
                 }],
                 inputEnabled: false,
                 selected: 0
             },
 
-            title : {
-                text : 'Time line'
+            title: {
+                text: 'Live random data'
             },
 
             exporting: {
                 enabled: false
             },
 
-            yAxis: [{ // Primary yAxis
-                labels: {
-                    format: '{value}%',
-                    style: {
-                        color: Highcharts.getOptions().colors[0]
-                    }
-                },
-                title: {
-                    text: 'Cache',
-                    style: {
-                        color: Highcharts.getOptions().colors[0]
-                    }
-                },
-                opposite: false
-
-            }
-
-            ],
-
-            series : [{
-                name : 'percentage',
-                yAxis: 0,
-                data : (function () {
+            series: [{
+                name: 'Random data',
+                data: (function () {
                     // generate an array of random data
-                    var data = [], time = (new Date()).getTime(), i;
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
 
                     for (i = -999; i <= 0; i += 1) {
                         data.push([
-                                time + i * 1000,
+                            time + i * 1000,
                             Math.round(Math.random() * 100)
                         ]);
                     }
@@ -94,67 +111,132 @@ App.prototype={
                 }())
             }]
         });
+
     },
 
     // drawRatio, use to show the ratio of nodes group cache in networking
-    drawRatio:function(dataAddress){
-        var svg = d3.select("#ratioChart");
-        let parentWidth = svg.node().parentNode.clientWidth;
-        let parentHeight = svg.node().parentNode.clientHeight;
+    drawRatio:function(container, api){
+        var self = this;
+        self.ratioChartContainer = container;
+        Highcharts.chart(container, {
+             chart: {
+                type: 'column'
+            },
 
-        var radius = Math.min(parentWidth, parentHeight)/4*3
-        svg.attr("width", radius);
-        svg.attr("height", radius);
-        var width = radius,
-            height = radius,
-            radius = Math.min(width, height) / 2,
-            g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            title: {
+                text: 'Node count for each ratio  section'
+            },
 
-        var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-        var pie = d3.pie()
-            .sort(null)
-            .value(function(d) { return d.population; });
-
-        var path = d3.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(0);
-
-        var label = d3.arc()
-            .outerRadius(radius - 40)
-            .innerRadius(radius - 40);
-
-        d3.csv(dataAddress, function(d) {
-            d.population = +d.population;
-            return d;
-        }, function(error, data) {
-            if (error) throw error;
-
-            var arc = g.selectAll(".arc")
-                .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
-
-            arc.append("path")
-                .attr("d", path)
-                .attr("fill", function(d) { return color(d.data.age); });
-
-            arc.append("text")
-                .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
-                .attr("dy", "0.35em")
-                .text(function(d) { return d.data.age; });
+            xAxis: {
+                categories: [
+                    '0-10%',
+                    '10%-20%',
+                    '20%-30%',
+                    '30%-40%',
+                    '40%-50%',
+                    '50%-60%',
+                    '60%-70%',
+                    '70%-80%',
+                    '80%-90%',
+                    '90%-100%',
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'node',
+                data: [{ y:0, color: self.colors[0]},
+                { y:0, color: self.colors[1]},
+                { y:0, color: self.colors[2]},
+                { y:0, color: self.colors[3]},
+                { y:0, color: self.colors[4]},
+                { y:0, color: self.colors[5]},
+                { y:0, color: self.colors[6]},
+                { y:0, color: self.colors[7]},
+                { y:0, color: self.colors[8]},
+                { y:0, color: self.colors[9]}]
+            }]
         });
+
     },
 
-    // drawingTopology, use to show the topology of networking
-    // crate a force directed graph ny d3
-    // refer to the http://emptypipes.org/2017/04/29/d3v4-selectable-zoomable-force-directed-graph/
-    drawTopology:function(canvasId, data){
-        var networkSvg = d3.select(canvasId);
+    drawSelected:function(container, api){
+        var self = this;
 
-        d3.json(data, function(error, graph) {
+        self.selectedChartContainer = container;
+        var apiAddress = this.host + api;
+
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+        chartOBj =Highcharts.chart(container, {
+            title: {
+                text: "",
+            },
+
+            xAxis: {
+                labels: {
+                    formatter: function () {
+                        var currentDate = new Date();
+                        var x = currentDate.getHours() + ":"
+                            + currentDate.getMinutes() + ":"
+                            + currentDate.getSeconds();
+                        return x;
+                    }
+                },
+                maxPadding: 0.05,
+                showLastLabel: true
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Usage'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+
+            series: [{
+                showInLegend: false,
+                name: '',
+                data: [0, 0, 0, 0, 0, 0, 0, 0]
+            }]
+
+        });
+        self.selectedChart = $("#"+container).highcharts();
+    },
+
+    drawTopology:function(canvasId, api){
+        var apiAddress = this.host + api;
+        var networkSvg = d3.select(canvasId);
+        var self = this;
+
+        d3.json(apiAddress, function(error, graph) {
             if (!error) {
-                createV4SelectableForceDirectedGraph(networkSvg, graph);
+                self.d3Graph.createD3ForceDirectedGraph(networkSvg, graph);
+
             } else {
                 console.error(error);
             }
@@ -165,5 +247,10 @@ App.prototype={
         var hours = minutes/60;
         var min = minutes%60;
         return hours +"hours"
+    },
+
+
+    getDataFromServer:function(api){
+
     }
 }

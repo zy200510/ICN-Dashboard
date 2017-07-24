@@ -10,7 +10,6 @@
 
     If you have any further issues, visit [Flask](http://flask.pocoo.org/)
 3.
-4.
 
 ## Installation
 
@@ -21,6 +20,11 @@
     `python server.py`
    you will be ask for inputting the the ip address of your machine 
 5. Open the http://your machine ip:5003/ in your browser
+
+## Run it with docker
+    - docker build -t icn
+    - docker run --name icn_demo -p 5013:5013 icn
+    - docker restart icn_demo
 
 
 

@@ -13,7 +13,6 @@
     <script type="application/javascript" src="script/public_lib/jquery-2.2.0.min.js"></script>
     <script type="application/javascript" src="script/public_lib/jquery-ui.js"></script>
 
-    <script type="application/javascript" src="script/backup/justgage.js"></script>
     <script type="application/javascript" src="script/public_lib/highstock.js"></script>
     <script type="application/javascript" src="script/public_lib/exporting.js"></script>
     <script type="application/javascript" src="script/public_lib/bootstrap.min.js"></script>
@@ -47,9 +46,11 @@
                         Networking Topology
                     </div>
                 </legend>
-                <div id="d3_selectable_force_directed_graph"  style="height:300px;  position: relative; margin-top: -10px; margin-bottom: -10px">
-                    <svg />
+                <div id="d3_selectable_force_directed_graph"  style="height:300px;  position: relative; margin-top: -10px; margin-bottom: -10px; z-index: 1">
+                    <svg  style="width: 100%;height: 100%;position: absolute"/>
+                    <div id="div_selected" style="width: 300px;height: 220px;margin-right: 0px;margin-bottom: 0px;position: absolute;right: 0;z-index:1"></div>
                 </div>
+
             </fieldset>
         </div>
         <div class="col-md-4" style="float: None;position: absolute;right: 0px;height: 100%">
@@ -57,17 +58,12 @@
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">
                     <div style="margin-left: 10px;margin-right: 80px">
-                        <select style="margin-top:5px">
-                          <option value="volvo">Total</option>
-                          <option value="saab">Usage</option>
-                          <option value="mercedes">Available</option>
-                        </select>
                         Statistics
                     </div>
 
                 </legend>
-                <div id="pieChart" style="height: 100%;width: 100%">
-                    <svg id="ratioChart"></svg>
+                <div id="ratioChart" style="height: 100%;width: 100%">
+                
                 </div>
             </fieldset>
         </div>
@@ -88,11 +84,15 @@
     $(document).ready(function(ex){
         var app =new App();
 
-         app.drawTimeline('#timeline');
+         app.drawTimeline('timeline');
 
-         app.drawRatio("./data/ratioPie.cvs");
+         app.drawSelected("div_selected");
 
-        app.drawTopology("#d3_selectable_force_directed_graph","./data/sample.json");
+         app.drawRatio("ratioChart", "comparison");
+
+         app.drawTopology("#d3_selectable_force_directed_graph","topology");
+
+         app.start();
 
     })
 </script>
